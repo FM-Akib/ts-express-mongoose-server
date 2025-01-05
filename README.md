@@ -1,4 +1,4 @@
-# Express TypeScript MongoDB Starter
+# Advanced Project Setup with MongoDB, Mongoose, Express, and TypeScript 🚀
 
 A complete starter template for building Node.js applications with Express, TypeScript, MongoDB, and essential development tools.
 
