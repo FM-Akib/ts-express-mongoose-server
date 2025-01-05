@@ -26,260 +26,212 @@ npm run start:dev
 ```
 
 Let’s get started! 🛠️
-
+Follow these steps to set up and run the project.
 ---
 
-## Step 1: Initialize the Project Folder
+### 1. Initialize the Project
 
-1. Create a folder for your project. For example:
+1. Create a new folder named `server-starter` and navigate into it.
    ```bash
    mkdir server-starter
+   cd server-starter
    ```
-2. Open the folder in VS Code:
-   ```bash
-   code server-starter
-   ```
-3. Initialize the project with `npm`:
+
+2. Initialize the project:
    ```bash
    npm init -y
    ```
-   This will generate a `package.json` file.
+   This will create a `package.json` file.
 
 ---
 
-## Step 2: Install Dependencies 📦
+### 2. Install Dependencies
 
-We need the following libraries:
-
-- **express**
-- **mongoose**
-- **typescript** (as a dev dependency)
-- **cors**
-- **dotenv**
-
-Install them one by one or all together with this command:
+Install the required dependencies:
 
 ```bash
 npm install express mongoose cors dotenv
-npm install --save-dev typescript
+npm install typescript --save-dev
+npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
+npm install prettier eslint-config-prettier eslint-plugin-prettier --save-dev
 ```
-
-### References for Documentation:
-
-- [Express](https://expressjs.com/)
-- [Mongoose](https://mongoosejs.com/docs/index.html)
-- [TypeScript](https://www.typescriptlang.org/download/)
-- [CORS](https://www.npmjs.com/package/cors)
-- [dotenv](https://www.npmjs.com/package/dotenv)
 
 ---
 
-## Step 3: Set Up TypeScript
+### 3. Configure TypeScript
 
-1. Initialize TypeScript configuration:
+1. Initialize TypeScript:
    ```bash
-   tsc --init
+   npx tsc --init
    ```
-   This creates a `tsconfig.json` file.
-2. Update these options:
+
+2. Update the `tsconfig.json` file:
    ```json
-   "rootDir": "./src",
-   "outDir": "./dist",
-   "include": ["src"],
-   "exclude": ["node_modules"]
+   {
+     "compilerOptions": {
+       "outDir": "dist",
+       "rootDir": "src",
+       "target": "ES2020",
+       "module": "CommonJS",
+       "noImplicitAny": true
+     },
+     "include": ["src"],
+     "exclude": ["node_modules"]
+   }
    ```
 
 ---
 
-## Step 4: Project Structure
+### 4. Configure ESLint
 
-1. Create a `src` folder:
-   ```bash
-   mkdir src
-   ```
-2. Inside `src`, create these files and folders:
-   - `app.ts`
-   - `server.ts`
-   - `src/app/config/index.ts`
-   ```bash
-   mkdir -p src/app/config
-   touch src/app.ts src/server.ts src/app/config/index.ts
-   ```
-
----
-
-## Step 5: Configure dotenv 🌟
-
-In `src/app/config/index.ts`, add:
-
-```ts
-import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({ path: path.join(process.cwd(), '.env') });
-
-export default {
-  port: process.env.PORT,
-  database_url: process.env.DATABASE_URL,
-};
-```
-
-Create a `.env` file in the root folder:
-
-```env
-PORT=5000
-DATABASE_URL="Your MongoDB Atlas URL here"
-```
-
----
-
-## Step 6: Basic App Setup ✨
-
-In `src/app.ts`, add:
-
-```ts
-import express, { Request, Response, Application } from 'express';
-import cors from 'cors';
-
-const app: Application = express();
-
-// Middleware
-app.use(express.json());
-app.use(cors());
-
-// Test Route
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
-});
-
-export default app;
-```
-
-In `src/server.ts`, add:
-
-```ts
-import mongoose from 'mongoose';
-import config from './app/config';
-import app from './app';
-
-async function main() {
-  try {
-    await mongoose.connect(config.database_url as string);
-    console.log('Connected to MongoDB');
-
-    app.listen(config.port, () => {
-      console.log(`App is running on port ${config.port}`);
-    });
-  } catch (err) {
-    console.error('Database connection failed:', err);
-  }
-}
-
-main();
-```
-
----
-
-## Step 7: Add ESLint and Prettier 🧹
-
-1. Install ESLint and Prettier:
-
-   ```bash
-   npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin prettier eslint-config-prettier --save-dev
-   ```
-
-2. Initialize ESLint:
-
+1. Initialize ESLint:
    ```bash
    npx eslint --init
    ```
 
-   **Answers to the prompts:**
+   Use these options:
+   - To check syntax, find problems, and enforce code style
+   - JavaScript modules (import/export)
+   - None of these (frameworks)
+   - Yes (using TypeScript)
+   - Node
+   - JSON
 
-   - How would you like to use ESLint? **To check syntax and find problems**
-   - What type of modules does your project use? **JavaScript modules (import/export)**
-   - Which framework? **None of these**
-   - Does your project use TypeScript? **Yes**
-   - Where does your code run? **Node**
-   - Format? **JSON**
-
-3. Update `.eslintrc.json`:
-
+2. Update the `.eslintrc.json` file:
    ```json
-   "extends": [
-     "eslint:recommended",
-     "plugin:@typescript-eslint/recommended",
-     "prettier"
-   ],
-   "rules": {
-     "no-console": "warn"
+   {
+     "env": {
+       "browser": true,
+       "es2021": true,
+       "node": true
+     },
+     "extends": [
+       "eslint:recommended",
+       "plugin:@typescript-eslint/recommended",
+       "prettier"
+     ],
+     "parser": "@typescript-eslint/parser",
+     "parserOptions": {
+       "ecmaVersion": 12,
+       "sourceType": "module"
+     },
+     "plugins": ["@typescript-eslint"],
+     "rules": {
+       "eqeqeq": "error",
+       "no-unused-vars": "error",
+       "prefer-const": ["error", { "ignoreReadBeforeAssign": true }]
+     }
    }
    ```
 
-4. Create a `.eslintignore` file:
-
-   ```
+3. Create an `.eslintignore` file:
+   ```plaintext
    node_modules
-dist
+   dist
    ```
 
-5. Add scripts to `package.json`:
+---
 
-   ```json
-   "scripts": {
-   "lint": "eslint src --ignore-path .eslintignore --ext .ts",
-     "lint:fix": "eslint src --fix"
-   }
-   ```
+### 5. Configure Prettier
 
-6. Configure Prettier:
-   Create `.prettierrc.json`:
-
+1. Create a `.prettierrc.json` file:
    ```json
    {
      "semi": true,
-     "singleQuote": true
+     "singleQuote": true,
+     "arrowParens": "avoid"
    }
    ```
 
-7. Add Prettier script:
+2. Create a `.prettierignore` file:
+   ```plaintext
+   node_modules
+   dist
+   ```
 
+3. Integrate Prettier with ESLint:
+   ```bash
+   npm install eslint-plugin-prettier eslint-config-prettier --save-dev
+   ```
+
+   Update `.eslintrc.json`:
    ```json
-   "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\""
+   {
+     "extends": [
+       "eslint:recommended",
+       "plugin:@typescript-eslint/recommended",
+       "prettier"
+     ],
+     "plugins": ["prettier"],
+     "rules": {
+       "prettier/prettier": "error"
+     }
+   }
    ```
 
 ---
 
-## Step 8: Running the Project 🏃‍♂️
+### 6. Add Scripts to `package.json`
 
-1. Compile TypeScript to JavaScript:
-   ```bash
-   "build": "tsc",
-   npm run build
-   ```
-2. Run the server:
-   ```bash
-   node dist/server.js
-   ```
+Update the `scripts` section:
 
----
-
-## Step 9: Use ts-node-dev for Development 🌟
-
-1. Install ts-node-dev:
-   ```bash
-   npm install ts-node-dev --save-dev
-   ```
-2. Add a script for development:
-   ```json
-   "start:prod": "node dist/server.js",
-   "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts"
-   ```
-3. Run the server in development mode:
-   ```bash
-   npm run start:dev
-   ```
+```json
+"scripts": {
+  "lint": "eslint src --ext .ts",
+  "lint:fix": "eslint src --ext .ts --fix",
+  "prettier": "prettier --write \"src/**/*.+(js|ts|json)\"",
+  "dev": "tsc --watch",
+  "build": "tsc",
+  "start:dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+  "start:prod": "node ./dist/server.js"
+}
+```
 
 ---
 
-🎉 **Your backend project is ready!** You now have a modern setup with MongoDB, Mongoose, Express, and TypeScript. Happy coding! 🚀
+### 7. Run the Project
+
+#### Compile TypeScript Code
+
+```bash
+npm run build
+```
+
+#### Run in Development Mode
+
+```bash
+npm run start:dev
+```
+
+#### Run in Production Mode
+
+```bash
+npm run start:prod
+```
+
+#### Lint Code
+
+```bash
+npm run lint
+```
+
+#### Format Code
+
+```bash
+npm run format
+```
+
+---
+
+### Tools and References
+
+- **Express**: [Documentation](https://expressjs.com/)
+- **Mongoose**: [Documentation](https://mongoosejs.com/docs/index.html)
+- **TypeScript**: [Documentation](https://www.typescriptlang.org/download)
+- **ESLint**: [Documentation](https://eslint.org/)
+- **Prettier**: [Documentation](https://prettier.io/)
+
+---
+
+Your server setup is complete with linting and formatting configured. Happy coding!
+
